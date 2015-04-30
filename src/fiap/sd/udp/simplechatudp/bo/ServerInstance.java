@@ -5,10 +5,20 @@ import fiap.sd.udp.simplechatudp.beans.Sala;
 import fiap.sd.udp.simplechatudp.beans.Servidor;
 import fiap.sd.udp.simplechatudp.beans.Usuario;
 import fiap.sd.udp.simplechatudp.interfaces.ServerInterface;
-
+import fiap.sd.udp.simplechatudp.receiver.Receiver;
 
 public class ServerInstance implements ServerInterface {
 
+	public ServerInstance(){
+		int port = 3333;
+		Receiver rec = new Receiver(port);
+		rec.run();
+		
+		
+		
+		
+	}
+	
 	@Override
 	public void registrarUsuario(Usuario user, String ip) {
 		// TODO Auto-generated method stub

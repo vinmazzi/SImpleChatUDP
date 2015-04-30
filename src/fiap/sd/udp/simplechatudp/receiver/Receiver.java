@@ -5,6 +5,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.Arrays;
 
+import fiap.sd.udp.simplechatudp.sender.Sender;
+
 /**
  * Implementa o lado "Ouvidor" de nosso chat UDP simples
  * @author fm
@@ -33,7 +35,20 @@ public class Receiver {
 				Arrays.fill(buffer, (byte) ' ');
 				DatagramPacket packet = new DatagramPacket(buffer,BUFSIZE);
 				listenSocket.receive(packet);
-				System.out.println(new String(packet.getData()));
+				String ipOrig = packet.getAddress().toString();
+				String data = new String(packet.getData()).trim();
+				Sender s = new Sender(ipOrig,3321);
+				System.out.println(data);
+				switch (data){
+				case "Connect123456CodeConnection":
+						s.sendMessage("Informe seu nome de usuário: ");
+					break;
+					
+
+				default:
+					break;
+				}
+				//System.out.println(new String(packet.getData()));
 				Thread.yield();
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -23,7 +23,6 @@ public class Console {
 	private static Console instance;
 	
 	public static Console getConsole() {
-		System.out.println("vai!");
 		if (instance == null) instance = new Console();
 		return instance;
 	}

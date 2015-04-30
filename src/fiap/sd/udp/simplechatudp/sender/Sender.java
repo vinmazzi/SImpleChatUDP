@@ -52,7 +52,7 @@ public class Sender {
 		return console.readLine();
 	}
 
-	private void sendMessage(String command) {
+	public void sendMessage(String command) {
 		DatagramPacket packet = new DatagramPacket(command.getBytes(),
 				command.length(), this.destAddress, this.destPort);
 		try {

@@ -11,8 +11,7 @@ public class RunSender {
 	
 	public static void main(String[] args) {
 		Console console = Console.getConsole();
-		System.out.println("caraio!");
-		console.println("SENsjdfhjsdhfkjshdkfj.DER");
+		console.println("SENDER");
 		String host = console.readLine("Qual o endereco do host com quem vai falar? > ");
 		int port = Integer.parseInt(console.readLine("Em qual porta em que ele esta' ouvindo? > "));
 		Sender sender = new Sender(host,port);
