@@ -8,7 +8,7 @@ import fiap.sd.udp.simplechatudp.beans.Servidor;
 
 public interface ServerInterface {
 
-	void registrarUsuario(Usuario user, String ip);
+	void registrarUsuario(String user, String ip);
 	List<Sala> listarSalas(Servidor servidor);
 	List<Usuario> listarUsuarios(Sala sala);
 	void criarSala(Sala sala, Servidor servidor);

@@ -5,6 +5,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.Arrays;
 
+import javax.xml.crypto.Data;
+
+import sun.awt.windows.ThemeReader;
+import fiap.sd.udp.simplechatudp.beans.Servidor;
+import fiap.sd.udp.simplechatudp.beans.Usuario;
+import fiap.sd.udp.simplechatudp.bo.ServerInstance;
 import fiap.sd.udp.simplechatudp.sender.Sender;
 
 /**
@@ -18,6 +24,14 @@ public class Receiver {
 	private static int BUFSIZE = 4096;
 	private DatagramSocket listenSocket;
 	
+	public DatagramSocket getListenSocket() {
+		return listenSocket;
+	}
+
+	public void setListenSocket(DatagramSocket listenSocket) {
+		this.listenSocket = listenSocket;
+	}
+	
 	public Receiver(int port) {
 		try {
 			listenSocket = new DatagramSocket(port);
@@ -28,31 +42,20 @@ public class Receiver {
 		}
 	}
 	
-	public void run() {
+	public DatagramPacket run(Servidor sInstance) {
 		byte[] buffer = new byte[BUFSIZE];
-		while(listenSocket!=null) {
-			try {
-				Arrays.fill(buffer, (byte) ' ');
-				DatagramPacket packet = new DatagramPacket(buffer,BUFSIZE);
-				listenSocket.receive(packet);
-				String ipOrig = packet.getAddress().toString();
-				String data = new String(packet.getData()).trim();
-				Sender s = new Sender(ipOrig,3321);
-				System.out.println(data);
-				switch (data){
-				case "Connect123456CodeConnection":
-						s.sendMessage("Informe seu nome de usuário: ");
-					break;
-					
-
-				default:
-					break;
-				}
-				//System.out.println(new String(packet.getData()));
-				Thread.yield();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		DatagramPacket msg = null;
+		try {
+			Arrays.fill(buffer, (byte) ' ');
+			DatagramPacket packet = new DatagramPacket(buffer,BUFSIZE);
+			listenSocket.receive(packet);
+			msg = packet;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} /*catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		return msg;
 	}
 }
