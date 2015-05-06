@@ -22,6 +22,7 @@ public class ServerInstance implements ServerInterface {
 		serverInstance.setIp("127.0.0.1");
 		Receiver r = new Receiver(serverPort);
 		listenSocket = r.getListenSocket();
+		Usuario usuarioTmp = null;
 		while(listenSocket != null){
 			DatagramPacket packet = r.run(serverInstance);
 			String ipOrig = packet.getAddress().toString().replace("/", "").trim();
@@ -59,9 +60,9 @@ public class ServerInstance implements ServerInterface {
 					e.printStackTrace();
 				}
 				System.out.println("Cadastrando usuário no servidor");
-				this.registrarUsuario(data, ipOrig);
+				usuarioTmp = this.registrarUsuario(data, ipOrig);
 				s = new Sender(ipOrig,3322);
-				s.sendMessage("1234MenuSelect4321" + splitter + "\nInforme o que quer fazer:\n1- Entrar em uma sala disponivel\n2 - Mandar mensagem privada para um usuário ONLINE.");
+				s.sendMessage("1234MenuSelect4321" + splitter + "\nInforme o que quer fazer:\n1 - Entrar em uma sala disponivel\n2 - Mandar mensagem privada para um usuário ONLINE.");
 				break;
 			case "1234MenuSelectAsw4321":
 				try {
@@ -70,6 +71,56 @@ public class ServerInstance implements ServerInterface {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				if(Integer.parseInt(data) == 1){
+					List<Sala> sala = this.listarSalas(serverInstance);
+					s = new Sender(ipOrig,3322);
+					if(sala.size() == 0){
+						s.sendMessage("1234SalaIndisponivel4321" + splitter + "\nNão existem salas disponiveis, deseja criar uma sala ?");
+					}else{
+						s.sendMessage("1234InicioListaSalas4321" + splitter + "\nEstas são as salas disponiveis: ");
+						for(int i=0;i<=sala.size();i++){
+							Sala salaTmp = sala.get(i);
+							s.sendMessage("1234Sala4321"+ splitter + salaTmp.getNome());
+						}
+						s.sendMessage("1234FimListaDeSalas" + splitter + "");
+					}
+				}
+				break;
+			case "1234SalaIndisponivelAsw4321":
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				s = new Sender(ipOrig,3322);
+				if(data.toLowerCase().equals("s")){
+					s.sendMessage("1234CriaNovaSalaNome4321" + splitter + "");
+				}else{
+					
+				}
+				break;
+			case "1234CriaNovaSalaNomeAsw4321":
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				s = new Sender(ipOrig,3322);
+				Sala salaTmp = this.criarSala(data,serverInstance, usuarioTmp);
+				this.entrarSala(salaTmp, usuarioTmp);
+				List<Sala> salalist = this.listarSalas(serverInstance);
+				for(int i=0;i<salalist.size();i++){
+					Sala tmp2 = salalist.get(i);
+					List<Usuario> u2 = tmp2.getUsuarios();
+					for(int j=0;j<u2.size();j++){
+						Usuario utmp = u2.get(j);
+						System.out.println(utmp.getNickName());
+					}
+
+				}
+				
+				break;
 			default:
 				break;
 			}
@@ -78,20 +129,22 @@ public class ServerInstance implements ServerInterface {
 	}
 	
 	@Override
-	public void registrarUsuario(String user, String ip) {
+	public Usuario registrarUsuario(String user, String ip) {
 
 		Usuario u = new Usuario();
 		u.setNickName(user);
 		u.setIp(ip);
 		u.setOnline(true);
 		serverInstance.setUsuarios(u);
+		return u;
 
 	}
 
 	@Override
 	public List<Sala> listarSalas(Servidor servidor) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Sala> sala = serverInstance.getSalas();
+		return sala;
 	}
 
 	@Override
@@ -101,8 +154,15 @@ public class ServerInstance implements ServerInterface {
 	}
 
 	@Override
-	public void criarSala(Sala sala, Servidor servidor) {
-		// TODO Auto-generated method stub
+	public Sala criarSala(String nome, Servidor servidor, Usuario owner) {
+		System.out.println("\n\n----To no Criar Sala.");
+		Sala sala = new Sala();
+		sala.setNome(nome);
+		sala.setOwner(owner);
+		servidor.addSalas(sala);
+		System.out.println("\n\n----Terminei o criar sala antes do return.");
+
+		return sala;
 		
 	}
 
@@ -120,8 +180,7 @@ public class ServerInstance implements ServerInterface {
 
 	@Override
 	public void entrarSala(Sala sala, Usuario usuario) {
-		// TODO Auto-generated method stub
-		
+		sala.setUsuarios(usuario);
 	}
 
 	@Override
