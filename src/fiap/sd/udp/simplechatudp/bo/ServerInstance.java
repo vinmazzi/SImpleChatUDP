@@ -34,27 +34,32 @@ public class ServerInstance implements ServerInterface {
 			String tmp[] = msg.split(splitter);
 			String code = tmp[0];
 			String data = null;
+			String nomeSala = null;
+			String nomeUsuario = null;
 			if(tmp.length > 1){
-				data = tmp[1];
+				//System.out.println("#############\n\nEsse é o valor de tmp[1]: " + tmp[1]);
+					data = tmp[1];
 			}
 			
-			
+			System.out.println("Este é o código: " + code);
 			switch (code){
+
 			case "Connect123456CodeConnection":
-				s.sendMessage("Connect123456CodeConnection-Closed"+ splitter);
+				System.out.println("Estou no connect!");
+				s.sendMessage("Connect123456CodeConnection-Closed" + splitter);
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				s = new Sender(ipOrig,3322);
-				s.sendMessage("Bem Vindo ao: " + serverInstance.getNome());
+				//s.sendMessage("Bem Vindo ao: " + serverInstance.getNome());
 				s.sendMessage("1234UsernameQuest4321" + splitter);
 				break;
 			case "1234UsernameAsw4321":
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -66,7 +71,7 @@ public class ServerInstance implements ServerInterface {
 				break;
 			case "1234MenuSelectAsw4321":
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -78,17 +83,17 @@ public class ServerInstance implements ServerInterface {
 						s.sendMessage("1234SalaIndisponivel4321" + splitter + "\nNão existem salas disponiveis, deseja criar uma sala ?");
 					}else{
 						s.sendMessage("1234InicioListaSalas4321" + splitter + "\nEstas são as salas disponiveis: ");
-						for(int i=0;i<=sala.size();i++){
+						for(int i=0;i<sala.size();i++){
 							Sala salaTmp = sala.get(i);
 							s.sendMessage("1234Sala4321"+ splitter + salaTmp.getNome());
 						}
-						s.sendMessage("1234FimListaDeSalas" + splitter + "");
+						s.sendMessage("1234FimListaDeSalas4321" + splitter + "");
 					}
 				}
 				break;
 			case "1234SalaIndisponivelAsw4321":
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -102,14 +107,17 @@ public class ServerInstance implements ServerInterface {
 				break;
 			case "1234CriaNovaSalaNomeAsw4321":
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				s = new Sender(ipOrig,3322);
 				Sala salaTmp = this.criarSala(data,serverInstance, usuarioTmp);
 				this.entrarSala(salaTmp, usuarioTmp);
-				List<Sala> salalist = this.listarSalas(serverInstance);
+				s.sendMessage("1234Message4321" + splitter + "Sala Foi criada!");
+				s.sendMessage("1234InSala4321" + splitter + salaTmp.getNome());
+				
+			/*	List<Sala> salalist = this.listarSalas(serverInstance);
 				for(int i=0;i<salalist.size();i++){
 					Sala tmp2 = salalist.get(i);
 					List<Usuario> u2 = tmp2.getUsuarios();
@@ -118,8 +126,34 @@ public class ServerInstance implements ServerInterface {
 						System.out.println(utmp.getNickName());
 					}
 
+				}*/
+				break;
+			case "1234InSalaAsw4321":
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				
+				nomeSala = tmp[2];
+				nomeUsuario = tmp[3];
+				data = tmp[4];
+				List<Sala> salaMsgList = serverInstance.getSalas();
+				Sala salaMsg = null;
+				List<Usuario> usrMsgList = serverInstance.getUsuarios();
+				Usuario usrMsg = null;
+				for(int i=0;i<salaMsgList.size();i++){
+					salaMsg = salaMsgList.get(i);
+					if(salaMsg.getNome().equals(nomeSala)){
+						break;
+					}
+				}
+				for(int i=0;i<usrMsgList.size();i++){
+					usrMsg = usrMsgList.get(i);
+					if(usrMsg.getNickName().equals(nomeUsuario)){
+						break;
+					}
+				}
+				this.enviarMsg(salaMsg, data, usrMsg);
 				break;
 			default:
 				break;
@@ -191,7 +225,25 @@ public class ServerInstance implements ServerInterface {
 
 	@Override
 	public void enviarMsg(Sala sala, String msg, Usuario usuario) {
-		// TODO Auto-generated method stub
+		
+		List<Usuario> usrLst = sala.getUsuarios();
+		Usuario u = null; 
+		String nickName = null;
+		String ipDest = null;
+		String splitter = "%%%Cod3%%%";
+		String msgCode = "1234InSalaMsg4321" + splitter;
+		String sMsg = null;
+		Sender s = null;
+		
+		
+		for(int i=0;i<usrLst.size();i++){
+			u = usrLst.get(i);
+			nickName = u.getNickName();
+			ipDest = u.getIp();
+			sMsg = msgCode + nickName + splitter + msg;
+			s = new Sender(ipDest,3322);
+			s.sendMessage(sMsg);
+		}
 		
 	}
 

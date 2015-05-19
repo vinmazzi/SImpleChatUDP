@@ -21,7 +21,7 @@ import fiap.sd.udp.simplechatudp.sender.Sender;
 public class Receiver {
 	
 	// PARA PESQUISAR: Qual o tamanho maximo do buffer?
-	private static int BUFSIZE = 4096;
+	private static int BUFSIZE = 5000;
 	private DatagramSocket listenSocket;
 	
 	public DatagramSocket getListenSocket() {
