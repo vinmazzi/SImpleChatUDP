@@ -27,7 +27,7 @@ public class ServerInstance implements ServerInterface {
 			DatagramPacket packet = r.run(serverInstance);
 			String ipOrig = packet.getAddress().toString().replace("/", "").trim();
 			String msg = new String(packet.getData()).trim();
-			int port = 3321;
+			int port = 3322;
 			Sender s = new Sender(ipOrig,port);
 			System.out.println(msg);
 			String splitter = "%%%Cod3%%%";
@@ -45,15 +45,17 @@ public class ServerInstance implements ServerInterface {
 			switch (code){
 
 			case "Connect123456CodeConnection":
+
 				System.out.println("Estou no connect!");
 				s.sendMessage("Connect123456CodeConnection-Closed" + splitter);
+
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				s = new Sender(ipOrig,3322);
+				//s = new Sender(ipOrig,3322);
 				//s.sendMessage("Bem Vindo ao: " + serverInstance.getNome());
 				s.sendMessage("1234UsernameQuest4321" + splitter);
 				break;
